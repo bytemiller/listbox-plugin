@@ -1,0 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+.listbox {
+    font-family: "Roboto", sans-serif;
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    border-radius: 6px;
+    padding: 20px;
+    background: rgb(235, 235, 235);
+    height: 400px;
+    overflow-y: scroll;
+}
+
+.listbox__item {
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.listbox__item-selected {
+    background: #2e60e7;
+    color: #fff;
+}
+
+.listbox__item:hover {
+    background: rgb(220, 220, 220);
+}
