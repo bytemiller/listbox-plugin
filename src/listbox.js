@@ -13,24 +13,31 @@ export class Listbox {
         this.root = document.querySelector(rootSelector);
         this.items = items;
         this.options = options;
-        this.styles = this.options.styles;
-        this.classSelected = this.styles.listboxItemSelectedClass;
+        this.theme = options.theme;
+        
+        this.styles = {};
     }
 
     // public
     
     // show listbox on the screen.
     show() {
-        this.listbox = this.#element('div', ['listbox']);
+        this.styles = this.#updateStyles();
+        
+        this.listbox = this.#element('div', ['listbox', this.styles.mainBGClass]);
         this.root.appendChild(this.listbox);
 
         this.items.forEach(item => this.add(item));
 
-        this.#setStyles();
-
         this.listbox.addEventListener('click', this.listboxSelectHandler);
         this.listbox.addEventListener('dblclick', this.listboxDoubleClickHandler);
         window.addEventListener('keydown', this.unselectByESCHandler);
+    }
+
+    // restart listbox.
+    restart() {
+        this.destroy();
+        this.show();
     }
 
     // destroy listbox from DOM.
@@ -59,12 +66,12 @@ export class Listbox {
      * @return {boolean} - function return true if item added success else return false if such item is exists.
      */
     add(data) {
-        const item = this.#element('div', ['listbox__item', 'listbox__item-hover'], data.id, data.name);
+        const item = this.#element('div', ['listbox__item', this.styles.itemHoverBG], data.id, data.name);
         this.listbox.appendChild(item);
     }
 
     /**
-     * Add item to listbox
+     * Add item to listbox.
      *
      * @param {string} id - item id.
      * @return {boolean} - function return true if item removed success else return false if such item isn't exists.
@@ -77,6 +84,17 @@ export class Listbox {
             return true;
         }
         return false;
+    }
+ 
+    /**
+     * Change listbox theme.
+     *
+     * @param {string} theme - theme name. Light or dark.
+     *
+     */
+    changeTheme(theme) {
+        this.theme = theme;
+        this.restart();
     }
 
     // functions helpers
@@ -99,12 +117,9 @@ export class Listbox {
     listboxSelectHandler = (event) => {
         if (event.target.classList.contains('listbox__item')) {
             this.#unselectSelectedItems();
-            let _class = 'listbox__item-selected';
-
-            if (this.classSelected) _class = this.classSelected;
             
-            event.target.classList.add(_class);
-            event.target.classList.remove('listbox__item-hover');
+            event.target.classList.add('listbox__item-selected');
+            event.target.classList.remove(this.styles.itemHoverBG);
         }
     };
 
@@ -129,49 +144,23 @@ export class Listbox {
         const element = document.createElement(tag);
         element.classList.add(...classes);
         
-        if (id)
-            element.id = id;
-        if (html) 
-            element.innerHTML = html; 
+        if (id) element.id = id;
+        if (html) element.innerHTML = html; 
         return element;
     }
 
     #unselectSelectedItems() {
         const items = this.listbox.querySelectorAll('.listbox__item');
         items.forEach(item => {
-            item.classList.remove((!this.classSelected) ? 'listbox__item-selected' : this.classSelected);
-            item.classList.add('listbox__item-hover');
+            item.classList.remove('listbox__item-selected');
+            item.classList.add(this.styles.itemHoverBG);
         });
     }
 
-    #setStyles() {
-        if (!this.styles) return;
-        
-        const bg = this.styles.listboxBG;
-        const color = this.styles.listboxColor;
-        const hover = this.styles.listboxItemHover;
-        const hoverColor = this.styles.listboxItemHoverColor;
-
-        if (bg)
-            this.listbox.style.background = bg;
-        
-        if (color)
-            this.listbox.style.color = color;
-        
-        if (hover) {
-            const items = this.listbox.querySelectorAll('.listbox__item');
-            
-            items.forEach(item => {
-                item.addEventListener('mouseover', () => {
-                    item.style.background = hover;
-                    if (hoverColor) item.style.color = hoverColor;
-                });
-
-                item.addEventListener('mouseleave', () => {
-                    item.style.background = bg;
-                    if (color) item.style.color = color;
-                });
-            });
-        }
+    #updateStyles() {
+        return {
+            mainBGClass: (this.theme === 'light') ? 'listbox__light' : 'listbox__dark',
+            itemHoverBG: (this.theme === 'light') ? 'listbox__item-hover-light' : 'listbox__item-hover-dark'
+        };
     }
 }

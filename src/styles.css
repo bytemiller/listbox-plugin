@@ -1,5 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+/* Main */
 
 .listbox {
     font-family: "Roboto", sans-serif;
@@ -8,7 +9,6 @@
     width: 350px;
     border-radius: 6px;
     padding: 20px;
-    background: rgb(235, 235, 235);
     height: 400px;
     overflow-y: scroll;
 }
@@ -22,10 +22,29 @@
 }
 
 .listbox__item-selected {
-    background: #2e60e7;
+    background: rgb(13, 110, 253);
     color: #fff;
 }
 
-.listbox__item-hover:hover {
+/* Themes */
+
+/* -- Light -- */
+
+.listbox__light {
+    background: rgb(235, 235, 235);
+}
+
+.listbox__item-hover-light:hover {
     background: rgb(220, 220, 220);
+}
+
+/* -- Dark -- */
+
+.listbox__dark {
+    background: rgb(33, 37, 41);
+    color: #fff;
+}
+
+.listbox__item-hover-dark:hover {
+    background: rgb(43, 48, 53);
 }

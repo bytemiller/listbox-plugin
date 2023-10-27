@@ -10,13 +10,7 @@ const listbox = new Listbox('.container', [
     {name: 'test3', id: 3}
 ], {
     onSelectCallback: callback,
-    styles: {
-        listboxBG: 'rgb(45, 45, 45)',
-        listboxColor: '#fff',
-        listboxItemHover: 'rgb(30, 30, 30)',
-        listboxItemHoverColor: '#fff',
-        listboxItemSelectedClass: 'my-custom-select'
-    }
+    theme: 'light'
 });
 
 listbox.show();
