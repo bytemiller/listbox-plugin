@@ -1,12 +1,11 @@
 /**
- * Convert css styles in object to css string.
+ * Get a item duplicates count.
  *
- * @param {object} styles - css styles in object.
- * @return {string} - css string ('display: flex; flex-direction: center').
+ * @param {array} arr - array.
+ * @return {number} - count.
  */
-export function css(styles) {
-    let cssString = '';
-    for (let [key, value] of Object.entries(styles))
-        cssString += `${key}: ${value}; `;
-    return cssString;
+export function getDuplicatesCount(arr, item) {
+    let count = 0;
+    arr.forEach(el => { if (el.id === item.id) count++; });
+    return count;
 }

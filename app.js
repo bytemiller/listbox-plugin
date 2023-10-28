@@ -5,12 +5,12 @@ function callback(data) {
 }
 
 const listbox = new Listbox('.container', [
-    {name: 'test1', id: 1},
-    {name: 'test2', id: 2},
-    {name: 'test3', id: 3}
+    {name: 'c', id: '1'},
+    {name: 'b', id: '2'},
+    {name: 'a', id: '3'},
 ], {
     onSelectCallback: callback,
-    theme: 'light'
+    theme: 'dark'
 });
 
 listbox.show();

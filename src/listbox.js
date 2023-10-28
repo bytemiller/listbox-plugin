@@ -1,5 +1,5 @@
-import { css } from './utils';
 import './styles.css';
+import { getDuplicatesCount } from './utils';
 
 export class Listbox {
     /**
@@ -15,6 +15,7 @@ export class Listbox {
         this.options = options;
         this.theme = options.theme;
         
+        this.selectedItemID;
         this.styles = {};
     }
 
@@ -22,7 +23,7 @@ export class Listbox {
     
     // show listbox on the screen.
     show() {
-        this.styles = this.#updateStyles();
+        this.styles = this.#getStyles();
         
         this.listbox = this.#element('div', ['listbox', this.styles.mainBGClass]);
         this.root.appendChild(this.listbox);
@@ -31,6 +32,7 @@ export class Listbox {
 
         this.listbox.addEventListener('click', this.listboxSelectHandler);
         this.listbox.addEventListener('dblclick', this.listboxDoubleClickHandler);
+        window.addEventListener('keydown', this.listboxSwitchItemByArrow);
         window.addEventListener('keydown', this.unselectByESCHandler);
     }
 
@@ -45,6 +47,7 @@ export class Listbox {
         this.listbox.removeEventListener('click', this.listboxSelectHandler);
         this.listbox.removeEventListener('dblclick', this.listboxDoubleClickHandler);
         window.removeEventListener('keydown', this.unselectByESCHandler);
+        window.removeEventListener('keydown', this.listboxSwitchItemByArrow);
         this.listbox.remove();
     }
 
@@ -63,11 +66,21 @@ export class Listbox {
      * Add item to listbox
      *
      * @param {object} itemData - item name and item id.
+     * @param {string} [filterType='iter'] - item position type in listbox.
      * @return {boolean} - function return true if item added success else return false if such item is exists.
      */
-    add(data) {
+    add(data, filterType = 'iter') {
+        if (getDuplicatesCount(this.items, data) >= 2) return false;
+        
         const item = this.#element('div', ['listbox__item', this.styles.itemHoverBG], data.id, data.name);
-        this.listbox.appendChild(item);
+        
+        if (filterType === 'iter')
+            this.listbox.appendChild(item);
+        
+        else if (filterType === 'afterbegin')
+            this.listbox.insertAdjacentElement('afterbegin', item);
+
+        return true;
     }
 
     /**
@@ -97,6 +110,20 @@ export class Listbox {
         this.restart();
     }
 
+    // sort listbox items by alphabet
+    filter() {
+        let itemsNames = [];
+        let sortedItems = [];
+
+        this.items.forEach(item => { itemsNames.push(item.name); });
+        itemsNames.sort().forEach(item => {
+            sortedItems.push(this.items.find(el => el.name === item));
+        });
+
+        this.items = sortedItems;
+        this.restart();
+    }
+
     // functions helpers
 
     /**
@@ -118,8 +145,9 @@ export class Listbox {
         if (event.target.classList.contains('listbox__item')) {
             this.#unselectSelectedItems();
             
-            event.target.classList.add('listbox__item-selected');
-            event.target.classList.remove(this.styles.itemHoverBG);
+            //this.selectedItemID = event.target.id;
+
+            this.#setSelectColor(event.target);            
         }
     };
 
@@ -133,6 +161,18 @@ export class Listbox {
             console.log(this.select(id));
         }
     };
+
+    // function in development.
+    listboxSwitchItemByArrow(event) {
+        if (event.keyCode === 38) {
+            // up
+            
+
+        } else if (event.keyCode === 40) {
+            // down
+            
+        }
+    }
 
     unselectByESCHandler = (event) => {
         if (event.keyCode === 27) this.#unselectSelectedItems();
@@ -157,10 +197,15 @@ export class Listbox {
         });
     }
 
-    #updateStyles() {
+    #getStyles() {
         return {
             mainBGClass: (this.theme === 'light') ? 'listbox__light' : 'listbox__dark',
             itemHoverBG: (this.theme === 'light') ? 'listbox__item-hover-light' : 'listbox__item-hover-dark'
         };
+    }
+
+    #setSelectColor(target) {
+        target.classList.add('listbox__item-selected');
+        target.classList.remove(this.styles.itemHoverBG);
     }
 }
