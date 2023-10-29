@@ -42,6 +42,6 @@ Main javascript file:
 
 *See the documentation for more details*
 
-Copyright (c) 2023 Artem Miller
+Created by Artem Miller.
 
 
